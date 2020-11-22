@@ -12,7 +12,7 @@ This repo is specifically for running on Azure Functions. Runtime is Python 3.8 
 
 ## Connecting to the OpsGenie API
 
-The Azure function code should have a file named "local.settings.json". Here you set environment variables.
+The Azure function code should have a file named "local.settings.json". Here you set environment variables. In Azure itself you go to your function > Settings > Configuration > Application Settings. Key "GENIE_KEY", value format below.
 
 The OpsGenie API key should exist as an env variable named "GENIE_KEY" with the value set to "GenieKey <your-api-key>".
 
