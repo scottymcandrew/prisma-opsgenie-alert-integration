@@ -1,5 +1,5 @@
 {
-  "scriptFile": "./twistlock/defender",
+  "scriptFile": "__init__.py",
   "entryPoint": "./twistlock/defender ../__init__.py",
   "bindings": [
     {
