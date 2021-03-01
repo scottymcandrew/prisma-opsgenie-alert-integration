@@ -24,7 +24,7 @@ The code grabs specific JSON key/values from the payload. This is completely cus
 
 It then builds a message (OpsGenie mandatory) and optional description (which is of course recommended to populate the alert with more meaningful imformation). Priority is set to P2 but this can be changed.
 
-For each alert we then call the OpsGenie API with the built message and description.
+For each alert we then call the OpsGenie API with the built message and description. 
 
 **Please note** this would generate an alert for every Prisma alert. So if we have a grouped alert this could generate a lot. One potential change should you wish to just call OpsGenie once, would be not to iterate through the Python List, but rather just access the first list item:
 
