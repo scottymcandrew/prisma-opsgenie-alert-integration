@@ -1,6 +1,6 @@
 {
   "scriptFile": "__init__.py",
-  "entryPoint": "./twistlock/defender ../__init__.py",
+  "entryPoint": "./twistlock/defender app-embedded main",
   "bindings": [
     {
       "authLevel": "function",
