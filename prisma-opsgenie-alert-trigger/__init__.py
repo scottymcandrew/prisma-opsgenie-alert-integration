@@ -12,6 +12,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     http = urllib3.PoolManager()
     url = "https://api.eu.opsgenie.com/v2/alerts"
+    # data = json.loads(req['body'])
     request_json_body = req.get_json()
     now = datetime.now()
     date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
@@ -25,26 +26,17 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     if not isinstance(request_json_body, list):  # Is this a single JSON object (dict)
         request_json_body = [request_json_body]  # Place into a list
 
-    # Gather key pieces of info from Prisma Alert JSON
+        # Gather key pieces of info from Prisma Alert JSON
     try:
         for counter, value in enumerate(request_json_body):
             account_name = request_json_body[counter]["accountName"]
+            severity = request_json_body[counter]["severity"]
             rule_name = request_json_body[counter]["alertRuleName"]
             resource_id = request_json_body[counter]["resourceId"]
             policy_desc = request_json_body[counter]["policyDescription"]
             cloud_resource_type = request_json_body[counter]["resourceCloudService"]
             cloud_type = request_json_body[counter]["cloudType"]
             prisma_alert_url = request_json_body[counter]["callbackUrl"]
-
-            opsgenie_priority = 'P2'
-            severity = request_json_body[counter]["severity"]
-            if severity == "high":
-                opsgenie_priority = 'P1'
-            elif severity == "medium":
-                opsgenie_priority = 'P4'
-            elif severity == 'low':
-                opsgenie_priority = 'P5'
-
 
             # name given to the alert message (title)
             message = 'Prisma Alert: ' + "| " + date_time + \
@@ -60,7 +52,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             req_data = {
                 'message': message,  # message is a mandatory field
                 'description': description,
-                'priority': opsgenie_priority
+                'priority': 'P2'
             }
             encoded_req_data = json.dumps(req_data).encode('utf-8')
 
@@ -73,13 +65,31 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             print(r.data)
 
     except:
-        # If payload is not of the expected format, reflect 200 back. 200 is required for the Prisma integration test
+        # Reflect the request back as a response. This will greatly aid troubleshooting...
+        # so one can analyse the JSON structure against what is expected.
         return func.HttpResponse(
-                "This HTTP triggered function executed but did not match a Prisma Cloud alert structure.",
+                "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
                 status_code=200
                 )
 
     return func.HttpResponse(
-             "This HTTP triggered function executed successfully.",
+             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
              status_code=200
              )
+
+    # name = req.params.get('name')
+    # if not name:
+    #     try:
+    #         req_body = req.get_json()
+    #     except ValueError:
+    #         pass
+    #     else:
+    #         name = req_body.get('name')
+
+    # if name:
+    #     return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
+    # else:
+    #     return func.HttpResponse(
+    #         "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+    #         status_code=200
+    #     )
